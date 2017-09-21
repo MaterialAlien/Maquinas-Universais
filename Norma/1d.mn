@@ -1,0 +1,42 @@
+// limpa variável
+operation clear(A){
+ 1: if zero A then goto 0 else goto 2
+ 2: do dec A goto 1
+}
+// A:=A+B (soma não-destrutiva)
+operation somaN(A,B,C){
+  1: if zero B then goto 5 else goto 2
+  2: do dec B goto 3
+  3: do inc A goto 4
+  4: do inc C goto 1
+  5: if zero C then goto 0 else goto 6
+  6: do dec C goto 7
+  7: do inc B goto 5
+}
+// A:=B usando C (atribuição não-destrutiva)
+operation loadN(A,B,C){
+  1: do clear(A) goto 2
+  2: do somaN(A,B,C) goto 0
+}
+operation mult(D,J){
+    1: do clear(R) goto 2
+    2: if zero J then goto 5 else goto 4
+    4: if zero D then goto 5 else goto 6
+    5: do clear(D) goto 0
+    6: do somaN(R,D,C) goto 7
+    7: do dec J goto 8
+    8: if zero J goto 9 else goto 6
+    9: do loadN(D,R,C) goto 0
+}
+
+main{
+   1: do clear(M) goto 2
+   2: do inc M goto 3
+   3: if zero X then goto 4 else goto 7
+   4: do clear(L) goto 5
+   5: do inc L goto 6
+   6: do mult(M,L) goto 9
+   7: do mult(M,X) goto 6
+   8: do dec X goto 3
+   9: do loadN(Y,M,C) goto 0
+}

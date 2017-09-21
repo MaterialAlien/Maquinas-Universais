@@ -1,0 +1,59 @@
+// limpa variável
+operation clear(A){
+ 1: if zero A then goto 0 else goto 2
+ 2: do dec A goto 1
+}
+
+// A:=A+B (soma destrutiva)
+operation soma(A,B){
+  1: if zero B then goto 0 else goto 2
+  2: do dec B goto 3
+  3: do inc A goto 1
+}
+
+// A:=A+B (soma não-destrutiva)
+operation somaN(A,B,C){
+  1: if zero B then goto 5 else goto 2
+  2: do dec B goto 3
+  3: do inc A goto 4
+  4: do inc C goto 1
+  5: if zero C then goto 0 else goto 6
+  6: do dec C goto 7
+  7: do inc B goto 5
+}
+
+// A:=B (atribuição destrutiva)
+operation load(A,B){
+  1: do clear(A) goto 2
+  2: do soma(A,B) goto 0
+}
+
+// A:=B usando C (atribuição não-destrutiva)
+operation loadN(A,B,C){
+  1: do clear(A) goto 2
+  2: do somaN(A,B,C) goto 0
+}
+// A divisivel_por_3 usando C (teste se múltiplo de 3)
+test divBy3(A,C){
+  1: do load(C,A) goto 2
+  2: if zero C then goto true else goto 3
+  3: do dec C goto 4
+  4: do inc A goto 5
+  5: if zero C then goto false else goto 6
+  6: do inc A goto 7
+  7: do dec C goto 8
+  8: if zero C then goto false else goto 9
+  9: do dec C goto 10
+ 10: do inc A goto 2
+}
+
+main{
+  1: do clear(Y) goto 3
+  2: if divBy3(X,C) then goto 3 else goto 7
+  3: do loadN(A,X,C) goto 4
+  4: do somaN(X,A,C) goto 5
+  5: do somaN(X,A,C) goto 6
+  6: do soma(Y,X) goto 0
+  7: do clear(Y) goto 8
+  8: do add Y 2 goto 0
+}
