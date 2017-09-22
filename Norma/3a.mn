@@ -1,4 +1,3 @@
-
 // limpa variável
 operation clear(A){
  1: if zero A then goto 0 else goto 2
@@ -146,14 +145,7 @@ operation sub(X,J)
 // Programa principal
 main {
   // extrai o primeiro componente do par
-  1: do fst(A,X,C,D) goto 2  
-  // extrai o segundo  componente do par
-  2: do snd(B,X,C,D) goto 3  
-  3: do loadN(D,A,C) goto 4
-  4: do somaN(D,B,C) goto 5
-  5: do sub(A,B) goto 6
-  6: do loadN(F,A,C) goto 7
-  7: do loadN(Q,D,C) goto 8
-  8: do codificacao(D,A) goto 9
+  1: do fst(A,X,C,D) goto 2
+  2: do loadN(B,A,C) goto 3  
+  3: do codificacao(A,B) goto 0
 }
-
