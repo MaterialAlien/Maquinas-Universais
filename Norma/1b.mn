@@ -102,11 +102,15 @@ operation snd(A,B,C,D){
 }
 main{
  1: do clear (Y) goto 2
- 2: if divBy3(X,C) then goto 4 else goto 3
- 3: do add Y 2 goto 0
- 4: do load(Y,X,C) goto 5
- 5: do soma(Y,X,C) goto 6
- 6: do soma(Y,X,C) goto 0
-
+ 2: if divBy3(X,C) then goto 7 else goto 3
+ 3: do inc Y goto 4 
+ 4: do dec X goto 5
+ 5: if divBy3(X,C) then goto 7 else goto 6
+ 6: do dec X goto7
+ 7: if zero X then goto 99 else goto 8
+ 8: do dec X goto 9
+ 9: do dec X goto 10
+ 10:do dec X goto 11
+ 11:do inc Y goto 7
 
 }

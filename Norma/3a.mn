@@ -1,3 +1,4 @@
+
 // limpa variável
 operation clear(A){
  1: if zero A then goto 0 else goto 2

@@ -1,9 +1,9 @@
+
 // limpa variável
 operation clear(A){
  1: if zero A then goto 0 else goto 2
  2: do dec A goto 1
 }
-
 // A:=A+B (soma destrutiva)
 operation soma(A,B){
   1: if zero B then goto 0 else goto 2
@@ -11,8 +11,14 @@ operation soma(A,B){
   3: do inc A goto 1
 }
 
+// A:=B (atribuição destrutiva)
+operation load(A,B){
+  1: do clear(A) goto 2
+  2: do soma(A,B) goto 0
+}
+
 // A:=A+B (soma não-destrutiva)
-operation soma(A,B,C){
+operation somaN(A,B,C){
   1: if zero B then goto 5 else goto 2
   2: do dec B goto 3
   3: do inc A goto 4
@@ -22,18 +28,48 @@ operation soma(A,B,C){
   7: do inc B goto 5
 }
 
-// A:=B (atribuição destrutiva)
-operation load(A,B){
-  1: do clear(A) goto 2
-  2: do soma(A,B) goto 0
-}
-
 // A:=B usando C (atribuição não-destrutiva)
-operation load(A,B,C){
+operation loadN(A,B,C){
   1: do clear(A) goto 2
-  2: do soma(A,B,C) goto 0
+  2: do somaN(A,B,C) goto 0
 }
 
+//A*=B;
+operation mul(A,B)
+{ 
+   1: do clear(J) goto 2
+   2: if zero B then goto 3 else goto 4
+   3: do clear(A) goto 0
+   4: if zero A then goto 0 else goto 5
+   5: do somaN(J,A,C) goto 6
+   6: do dec B goto 7
+   7: if zero B then goto 8 else goto 5
+   8: do load(A,J) goto 0
+}
+
+operation codificacao(A,B){
+ 1: if zero A then goto 2 else goto 3
+ 2: do load(S,1) goto 11
+ 3: if cmp A 1 then goto 4 else goto 5
+ 4: do add Y 2 goto 11
+ 5: do dec A goto 6
+ 6: do add Y 2 goto 7
+ 7: do add T 2 goto 8
+ 8: do mul(Y,T) goto 9
+ 9: do dec A goto 10
+ 10: if zero A then goto 11 else goto 7
+ 11: if zero B then goto 12 else goto 13
+ 12: do load(U,1) goto 21
+ 13: if cmp B 1 then goto 14 else goto 15
+ 14: do add U 3 goto 21
+ 15: do dec B goto 16
+ 16: do add U 3 goto 17
+ 17: do add V 3 goto 18
+ 18: do mul(U,V) goto 19
+ 19: do dec B goto 20
+ 20: if zero B then goto 21 else goto 17
+ 21: do mul(Y,U) goto 0
+}
 // A:=A div 2 usando C (divisão inteira por 2)
 operation div2(A,C){
   1: do load(C,A) goto 2
@@ -58,7 +94,7 @@ test divBy2(A,C){
 // A:=fst(B) usando C,D (extrai o primeiro componente do par)
 operation fst(A,B,C,D){
   1: do clear(A) goto 2
-  2: do load(C,B,D) goto 3
+  2: do loadN(C,B,D) goto 3
   3: if divBy2(C,D) then goto 4 else goto 6
   4: do div2(C,D) goto 5
   5: do inc A goto 3
@@ -94,19 +130,28 @@ test divBy3(A,C){
 // A:=snd(B) usando C,D (extrai o segundo componente do par)
 operation snd(A,B,C,D){
   1: do clear(A) goto 2
-  2: do load(C,B,D) goto 3
+  2: do loadN(C,B,D) goto 3
   3: if divBy3(C,D) then goto 4 else goto 6
   4: do div3(C,D) goto 5
   5: do inc A goto 3
   6: do clear(C) goto 0
 }
-main{
- 1: do clear (Y) goto 2
- 2: if divBy3(X,C) then goto 4 else goto 3
- 3: do add Y 2 goto 0
- 4: do load(Y,X,C) goto 5
- 5: do soma(Y,X,C) goto 6
- 6: do soma(Y,X,C) goto 0
 
-
+operation sub(X,J)
+{
+  1: if zero J then goto 0 else goto 2
+  2: do dec X goto 3
+  3: do dec J goto 1
 }
+// Programa principal
+main {
+  // extrai o primeiro componente do par
+  1: do fst(A,X,C,D) goto 2  
+  // extrai o segundo  componente do par
+  2: do snd(B,X,C,D) goto 3  
+  3: do loadN(D,A,C) goto 4
+  4: do somaN(D,B,C) goto 5
+  5: do sub(A,B) goto 8
+  8: do codificacao(D,A) goto 9
+}
+

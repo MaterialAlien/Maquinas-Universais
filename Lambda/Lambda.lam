@@ -1,0 +1,85 @@
+let
+-- Combinadores basicos
+ i  = \x. x ; 
+ k  = \x y. x;        
+ s  = \x y z. x z (y z);
+
+-- Combinador de ponto fixo      
+ fix      = \f. (\x. f (x x)) (\x. f (x x)) ;
+
+-- Logica booleana
+ true     =  \a b. a ;
+ false    =  \a b. b ;
+ if       =  \c a b. c a b ;
+ and      =  \a b. a b a ;
+ or       =  \a b. a a b ;
+ not      =  \p. p false true ;
+ xor      =  \a b. (or (and (not a) b) (and a (not b))) ;
+ sss      =  \a b. (not (xor a b)) ;
+
+-- Pares
+ pair     = \a b c. c a b ;
+ fst      = \p. p true ;
+ snd      = \p. p false ;
+
+-- Numeros naturais
+ zero     = \f x. x ;
+ succ     = \n p. \q. p (n p q) ;
+ pred     = \n. fst (n (\p.(pair (snd p) (succ (snd p)))) (pair zero zero)) ;
+ add      = \m n p q. (m p) (n p q) ;
+ sub      = \m n. (n pred) m ;
+ isZero   = \n. n (\x. false) true ;
+ equal    = \m n. and (isZero (sub m n)) (isZero (sub n m)) ;
+ lessEq   = \m n. isZero (sub m n) ;
+ great    = \m n. not ( isZero (sub m n)) ;
+ greatEq  = \m n. isZero (sub n m) ;
+ less     = \m n. not (isZero (sub n m)) ;
+ mult     = \m n p q. m (n p) q ;
+ div      = fix (\M. \m n. if (less m n) zero (succ (M (sub m n) n))) ;
+divide    = (\n.((\f.(\x.x x) (\x.f (x x))) (\c.\n.\m.\f.\x.(\d.(\n.n (\x.(\a.\b.b)) (\a.\b.a)) d ((\f.\x.x) f x) (f (c d m f x))) ((\m.\n.n (\n.\f.\x.n (\g.\h.h (g f)) (\u.x) (\u.u)) m) n m))) ((\n.\f.\x. f (n f x)) n));
+ mod      = fix (\M. \m n. if (less m n) m (M (sub m n) n)) ; 
+ exp      = \m n. n m ;
+ fatorial = fix (\M. \n. if (isZero (pred n)) 1 (mult n (M (pred n)))) ;
+
+-- Listas
+ empty    = \x. true ;
+ cons     = \h t. pair h t ;
+ isEmpty  = \l. l (\x y.false) ;
+ head     = fst ;
+ tail     = snd ;
+ length   = fix (\M. \l. if (isEmpty l) 0 (succ (M (tail l)))) ;
+
+-- Atividades
+fracNum = \n.(fst n);
+
+fracDenum = \n.(snd n);
+
+fracMake = \n. (if (isZero (fracDenum n)) 0 (div (fracNum n) (fracDenum n)));
+
+fracIsZero = \n. (if (isZero(fracNum n)) true false);
+
+fracInv = \n. (if (isZero(fracNum n)) (pair 0 0) (pair(fracDenum n) (fracNum n)));
+
+fracMult = \x. (pair (mult (fracNum(head x)) ( fracNum (head (tail x) ))) (mult (fracDenum(head x)) ( fracDenum (head (tail x) )))) ;
+
+fracSum = \n. (if  (great  (fracNum(fracDenum n)) (fracDenum(fracDenum n)))
+	(isZero( mod (fracNum(fracDenum n)) (fracDenum(fracNum n))  ) 
+    	(pair (add (mult (fracNum(fracNum n)) (fracDenum(fracDenum n)))  (mult (fracNum(fracDenum n)) (fracDenum(fracNum n)) ))	(mult (fracDenum(fracNum n)) (fracDenum(fracDenum n))))
+        (pair (add (mult (fracNum(fracDenum n)) (div (fracDenum(fracNum n)) (fracDenum(fracDenum n)))) (fracNum(fracNum n))) (fracDenum(fracNum n)))
+    ) 
+    (isZero (mod (fracDenum(fracDenum n)) (fracDenum(fracNum n)))
+	(pair 	(add (mult (fracNum(fracNum n)) (fracDenum(fracDenum n)))  (mult (fracNum(fracDenum n)) (fracDenum(fracNum n)) ))(mult (fracDenum(fracNum n)) (fracDenum(fracDenum n))))
+	(pair	(add (mult (fracNum(fracNum n)) (div (fracDenum(fracDenum n)) (fracDenum(fracNum n)))) (fracNum(fracDenum n)) )	(fracDenum(fracDenum n)))
+	)
+)
+
+in
+--Exemplos
+(fracNum (pair 2 3))
+(fracDenum (pair 2 3))
+(fracMake (pair 9 8))
+(fracIsZero (pair 9 0))
+(fracInv (pair  8 2))
+(fracMult ( cons (pair 3 4) (cons (pair 3 2) empty)))
+(fracSum ( pair (pair 3 2) (pair 2 1)))
+ 

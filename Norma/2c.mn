@@ -100,13 +100,48 @@ operation snd(A,B,C,D){
   5: do inc A goto 3
   6: do clear(C) goto 0
 }
-main{
- 1: do clear (Y) goto 2
- 2: if divBy3(X,C) then goto 4 else goto 3
- 3: do add Y 2 goto 0
- 4: do load(Y,X,C) goto 5
- 5: do soma(Y,X,C) goto 6
- 6: do soma(Y,X,C) goto 0
+
+// A:=A*B usando C,D
+operation mult(A,B,C,D){
+ 1: do load(D,A,C) goto 2
+ 2: do clear(A) goto 3
+ 3: if zero D then goto 0 else goto 4
+ 4: do soma (A,B,C) goto 5
+ 5: do dec D goto 3
+}
+
+//A menor que B, usando A B
+test menor(A,B){
+ 1: if zero B then goto false else goto 2
+ 2: if zero A then goto true else goto 3
+ 3: do dec A goto 4
+ 4: do dec B goto 1
+}
 
 
+main {
+ // extrai o primeiro componente do par
+ 1: do fst(A,X,C,D) goto 2  
+//  extrai o segundo  componente do par
+ 2: do snd(B,X,C,D) goto 3 
+// 1: do inc B goto 90
+// 90:do inc B goto 91
+// 91: do inc B goto 92
+// 92: do inc B goto 93
+// 93: do inc A goto 94 
+// 94:do inc A goto 3
+ 
+ 3: if zero A then goto 4 else goto 5
+ 4: do load(Y,B) goto 0
+ 5: if cmp A 1 then goto 4 else goto 6
+ 6: do clear (Y) goto 7
+ 7: if zero A then goto 0 else goto 8
+ 8: do load (C,A,F) goto 20
+ 20:do load (D,C,F) goto 21
+ 21:do load (E,B,F) goto 9
+ 9: if menor(E,D) then goto 0 else goto 10
+ 10: do inc Y goto 11
+ 11:do dec C goto 12
+ 12:do dec B goto 13
+ 13:if zero C then goto 7 else goto 11
 }

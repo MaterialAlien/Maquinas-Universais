@@ -100,13 +100,34 @@ operation snd(A,B,C,D){
   5: do inc A goto 3
   6: do clear(C) goto 0
 }
-main{
- 1: do clear (Y) goto 2
- 2: if divBy3(X,C) then goto 4 else goto 3
- 3: do add Y 2 goto 0
- 4: do load(Y,X,C) goto 5
- 5: do soma(Y,X,C) goto 6
- 6: do soma(Y,X,C) goto 0
+
+// A:=A*B usando C,D
+operation mult(A,B,C,D){
+ 1: do load(D,A,C) goto 2
+ 2: do clear(A) goto 3
+ 3: if zero D then goto 0 else goto 4
+ 4: do soma (A,B,C) goto 5
+ 5: do dec D goto 3
+}
+
+// A:=A! usando C
+//operation fat(A,C,D){
+// 1: if zero A then goto 2 else goto 3
+// 2: do inc A goto 0
+ //3: do load (C,A,D) goto 4
+ //4: do dec C goto 5
+// 5: do mult(A, do fat(
+//}
+
+main {
+ // extrai o primeiro componente do par
+ 1: do fst(A,X,C,D) goto 2  
+ // extrai o segundo  componente do par
+ 2: do snd(B,X,C,D) goto 3 
+ 3: do inc B goto 4
+ 4: do mult (A,B,C,D) goto5
+ 5: do load (Y,A) goto 0 
+  
 
 
 }
